@@ -12,13 +12,13 @@ const gameSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  email: {
+  
+  genre: {
     type: String,
-    match: [
-      /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/,
-      "Please enter a valid email address",
-    ],
+    required: [true, 'Please add what genre is'],
+    maxlength: [50, 'NO more than 50 characters']
   },
+
   description: {
     type: String,
     required: [true, "Please add a description"],
