@@ -1,12 +1,12 @@
 
-const Games = require("../models/game")
+const Game = require("../models/game")
 
 const getAllGames = async (req, res) => {
     try {
         const games = await Game.find({});
            res
         .status(200)
-        .json({ success: true, data: game });
+        .json({ success: true, data: games });
     }
         
     catch (error) {

@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const gameRoutes = require('./gameRoutes');
-const userRoutes = require('./userRoute')
+const userRoute = require('./userRoute')
 
 
 router.use('/games', gameRoutes);
  
-router.use('/users', userRoutes);
+router.use('/users', userRoute);
 
 
 module.exports = router;

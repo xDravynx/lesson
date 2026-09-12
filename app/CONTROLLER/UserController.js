@@ -1,12 +1,12 @@
 
-const Users = require("../models/user")
+const User = require("../models/user")
 
 const getAllUsers = async (req, res) => {
     try {
         const users = await User.find({});
            res
         .status(200)
-        .json({ success: true, data: user });
+        .json({ success: true, data: users });
     }
         
     catch (error) {
