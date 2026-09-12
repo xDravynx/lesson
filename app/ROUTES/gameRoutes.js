@@ -8,17 +8,16 @@ const {
     deleteGame
 } = require('../controller/gameController');
 
-router.get('/', getAllGames);
-    
-router.get('/:id', getGameById);
+// Handles paths hitting: /games
+router.route('/')
+    .get(getAllGames)
+    .post(createGame);
 
-router.post('/', createGame);
-
-router.put('/:id', updateGame);
-
-router.delete('/:id', deleteGame);
-
-
+// Handles paths hitting: /games/:id
+router.route('/:id')
+    .get(getGameById)
+    .put(updateGame)
+    .delete(deleteGame);
 
 module.exports = router;
 

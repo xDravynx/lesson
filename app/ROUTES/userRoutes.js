@@ -8,17 +8,16 @@ const {
     deleteUser
 } = require('../controller/userController');
 
-router.get('/', getAllUsers);
+// Handles paths hitting: /users
+router.route('/')
+    .get(getAllUsers)
+    .post(createUser);
+
+// Handles paths hitting:  /users/:id
+router.route('/:id')
+    .get(getUserById)
+    .put(updateUser)
+    .delete(deleteUser);
     
-router.get('/:id', getUserById);
-
-router.post('/', createUser);
-
-router.put('/:id', updateUser);
-
-router.delete('/:id', deleteUser);
-
-
-
 module.exports = router;
 

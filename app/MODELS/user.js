@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { describe } = require("node:test");
+
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -12,13 +12,6 @@ const userSchema = new mongoose.Schema({
   age: {
     type: Number,
     required: true,
-  },
-  email: {
-    type: String,
-    match: [
-      /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/,
-      "Please enter a valid email address",
-    ],
   },
   genre: {
     type: String,

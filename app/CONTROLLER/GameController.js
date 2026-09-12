@@ -4,49 +4,35 @@ const Game = require("../models/game")
 const getAllGames = async (req, res) => {
     try {
         const games = await Game.find({});
-           res
-        .status(200)
-        .json({ success: true, data: games });
+        res.status(200).json({ success: true, data: games });
     }
         
     catch (error) {
-           res
-        .status(400)
-        .json({ success: false, message: error.message });
+        res.status(400).json({ success: false, message: error.message });
     }
 };
 
 const getGameById = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const game = await Game.findById(id);
 
-try {
-    const {id} = req.params;
-    const game = await Game.findById(id);
-
-    if (!game) {
-        return res.status(404).json({ success: false, message: 'Game not found!'})
+        if (!game) {
+            return res.status(404).json({ success: false, message: 'Game not found!'})
+        }
+        res.status(200).json({ success: true, data: game });
+    } catch (error) {
+        res.status(400).json({success: false, message: "Access denied"})
     }
-        res
-        .status(200)
-        .json({ success: true, data: game });
-} catch (error) {
-    res.status(400).json({success: false, message: "Access denied"})
-    
-}
-}
+};
 
-const createGame = async (req, res) => {
-    
+const createGame = async (req, res) => {    
     try {
         const game = await Game.create(req.body)
-    res
-    .status(201)
-    .json({ success: true, data: game });
+    res.status(201).json({ success: true, data: game });
     } catch (error) {
-        res
-    .status(400)
-    .json({ success: false, message: `${req.method} - Request denied` });
+        res.status(400).json({ success: false, message: `${req.method} - Request denied` });
     }
-    
 };  
 
 const updateGame = async (req, res) => {
