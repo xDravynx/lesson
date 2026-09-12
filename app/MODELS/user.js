@@ -17,7 +17,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     describe: [50, 'Tell me your favor genre of games.']
-  }
+  },
+  // 🔗 Reference to an array of Games
+  favoriteGames: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Game" // Must exactly match the model name exported in your Game schema
+  }]
 });
 
 module.exports = mongoose.model("User", userSchema);

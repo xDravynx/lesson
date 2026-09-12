@@ -1,13 +1,10 @@
-
 const Game = require("../models/game")
 
 const getAllGames = async (req, res) => {
     try {
         const games = await Game.find({});
         res.status(200).json({ success: true, data: games });
-    }
-        
-    catch (error) {
+    } catch (error) {
         res.status(400).json({ success: false, message: error.message });
     }
 };
@@ -22,7 +19,7 @@ const getGameById = async (req, res) => {
         }
         res.status(200).json({ success: true, data: game });
     } catch (error) {
-        res.status(400).json({success: false, message: "Access denied"})
+        res.status(400).json({success: false, message: error.message})
     }
 };
 
@@ -31,7 +28,7 @@ const createGame = async (req, res) => {
         const game = await Game.create(req.body)
     res.status(201).json({ success: true, data: game });
     } catch (error) {
-        res.status(400).json({ success: false, message: `${req.method} - Request denied` });
+        res.status(400).json({ success: false, message: error.message });
     }
 };  
 
@@ -63,7 +60,6 @@ try {
     }
     res.status(200).json({success: true, message: "Game success deleted"})
 } catch (error) {
-
     res.status(500).json({ success: false, message: error.message})
 }
 }
