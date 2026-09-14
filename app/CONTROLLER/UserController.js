@@ -1,10 +1,12 @@
-
 const User = require("../models/user")
-
+const messages = require("../UTILS/messages");
 
 const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find({}).populate("favoriteGames");
+        const users = await User.find({})
+            .select('-__v')
+            .populate("favoriteGames", "-__v");
+
         res.status(200).json({ success: true, data: users });
     }   
     catch (error) {
@@ -15,10 +17,12 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
     try {
         const {id} = req.params;
-        const user = await User.findById(id).populate('favoriteGames');
+        const user = await User.findById(id)
+            .select('-__v')
+            .populate("favoriteGames", "-__v");
 
         if (!user) {
-            return res.status(404).json({ success: false, message: 'User not found!'})
+            return res.status(404).json({ success: false, message: messages.USER_NOT_FOUND})
         }
             res.status(200).json({ success: true, data: user });
     } catch (error) {
@@ -29,11 +33,14 @@ const getUserById = async (req, res) => {
 const createUser = async (req, res) => {
     try {
         const user = await User.create(req.body)
-    res.status(201).json({ success: true, data: user });
+
+        const userObj = user.toObject();
+        delete userObj.__v
+
+    res.status(201).json({ success: true, data: userObj });
     } catch (error) {
         res.status(400).json({ success: false, message: error.message });
     }
-    
 };  
 
 const updateUser = async (req, res) => {
@@ -42,16 +49,17 @@ const updateUser = async (req, res) => {
       const user = await User.findByIdAndUpdate(id, req.body, {
         new: true,
         runValidators: true,
-      }).populate('favoriteGames');
+      })
+        .select('-__v')
+        .populate("favoriteGames", "-__v");
 
       if (!user) {
-        return res.status(404).json({ success: false, message: 'User not updated!' })
+        return res.status(404).json({ success: false, message: messages.USER_NOT_FOUND })
       }
       res.status(200).json({success: true, data: user})
 
   } catch (error) {
-    res.status(400)
-    .json({ success: false, message: error.message})
+    res.status(400).json({ success: false, message: error.message})
 }
 }
 
@@ -61,9 +69,9 @@ try {
     const user = await User.findByIdAndDelete(id);
 
     if (!user) {
-        return res.status(404).json({success: false, message: 'User not deleted!'})
+        return res.status(404).json({success: false, message: messages.USER_NOT_FOUND})
     }
-    res.status(200).json({success: true, message: "User success deleted"})
+    res.status(200).json({success: true, message: "User successfully deleted"})
 } catch (error) {
     res.status(500).json({ success: false, message: error.message})
 }

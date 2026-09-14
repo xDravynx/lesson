@@ -24,6 +24,10 @@ const gameSchema = new mongoose.Schema({
     required: [true, "Please add a description"],
     maxlength: [500, "Description cannot be more than 500 characters"],
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  }
 });
 
 module.exports = mongoose.model("Game", gameSchema);
