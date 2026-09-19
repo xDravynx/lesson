@@ -32,7 +32,7 @@ const getAllGames = async (req, res) => {
 
         // 4. Pagination
         const page = parseInt(req.query.page, 10) || 1;
-        const limit = parseInt(req.query.limit, 10) || 10;
+        const limit = parseInt(req.query.limit, 10) || 2;
         const skip = (page - 1) * limit;
 
         query = query.skip(skip).limit(limit);
