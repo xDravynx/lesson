@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Users from './components/Users';
-// import Games from './components/Games';
+import Games from './components/Games';
 
 function App() {
   const [notification, setNotification] = useState({ message: '', type: ''});
@@ -38,7 +38,7 @@ return (
 
   <div style={{ display: 'flex', gap: '40px' }}>
     <Users API_URL={API_URL} showMessage={showMessage} />
-    {/* <Games API_URL={API_URL} showMessage={showMessage} /> */}
+    <Games API_URL={API_URL} showMessage={showMessage} />
   </div>
 </div>
 )
