@@ -1,9 +1,12 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect} from "react";   
+import SearchBar from './SearchBar';
+
 
 function Users({ API_URL, showMessage }) {
     const [users, setUsers] = useState([]);
     const [userData, setUserData] = useState({ name: '', age: '', genre: ''});
     const [selectedUser, setSelectUser] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         fetchUsers();
@@ -61,6 +64,10 @@ function Users({ API_URL, showMessage }) {
         }
     }
 
+    const filteredUsers = users.filter(user =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div style={{flex: 1 }}>
             {selectedUser && (
@@ -74,18 +81,27 @@ function Users({ API_URL, showMessage }) {
             )}
 
             <h2>Users</h2>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '15px'}}>
+            <form onSubmit={handleSubmit} 
+            style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '15px'}}>
 
-                <input type="text" placeholder="User Name" value={userData.name} onChange={(e) => setUserData({...userData, name: e.target.value})} required />
+            <input type="text" placeholder="User Name" value={userData.name} onChange={(e) => setUserData({...userData, name: e.target.value})} required />
                 
-                <input type="number" placeholder="Age" value={userData.age} onChange={(e) => setUserData({...userData, age: e.target.value})} required />
+            <input type="number" placeholder="Age" value={userData.age} onChange={(e) => setUserData({...userData, age: e.target.value})} required />
                 
-                <input type="text" placeholder="Favorite Genre" value={userData.genre} onChange={(e) => setUserData({...userData, genre: e.target.value})} required />
-                <button type="submit">Add User</button>
+            <input type="text" placeholder="Favorite Genre" value={userData.genre} onChange={(e) => setUserData({...userData, genre: e.target.value})} required />
+            <button type="submit">Add User</button>
             </form>
 
+            <hr style={{ margin: '20px 0', border: '0', borderTop: '1px solid #ccc'}} />
+
+            <SearchBar
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                placeholder="🔍 Search users by name..." 
+            />
+
             <ul style={{ padding: 0, listStyle: 'none'}}>
-                {users.map(user => (
+                {filteredUsers.map(user => (
                     <li key={user._id} style={{ marginBottom: '10px', padding: '10px', border: '1px solid #ccc' }}>
                         <strong>{user.name} </strong>
                         <div style={{ float: 'right'}}>

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import SearchBar from './SearchBar'
 
 function Games({ API_URL, showMessage }) {
     const [games, setGames] = useState([]);
     const [gameData, setGameData] = useState({ name: '', year: '', genre: '', description: ''})
     const [selectedGame, setSelectedGame] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('')
+
 
     useEffect(() => {
         fetchGames();
@@ -61,6 +64,10 @@ function Games({ API_URL, showMessage }) {
         }       
     };
 
+    const filteredGames = games?.filter(game =>
+        game.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+
     return (
         <div style={{ flex: 1 }}>
             {selectedGame && (
@@ -83,14 +90,21 @@ function Games({ API_URL, showMessage }) {
                 <textarea placeholder="Description" value={gameData.description} onChange={(e) => setGameData({...gameData, description: e.target.value})} required />
                     <button type="submit">Add Game</button>
             </form>
+            
+            <hr style={{ margin: '20px 0', border: '0', borderTop: '1px solid #ccc'}} />
 
+            <SearchBar
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                placeholder="🔍 Search games by name..." 
+            />
             <ul style={{ padding: 0, listStyle: 'none' }}>
-                {games.map(game => (
+                {filteredGames.map(game => (
                     <li key={game._id} style={{ marginBottom: '10px', padding: '10px', border: '1px solid #ccc' }}>
-                        <strong>{game.name}</strong>
-                        <div style={{ float: 'right' }}>
-                            <button type="button" onClick={() => recallGame(game._id)} style={{ marginRight: '10px', cursor: 'pointer'}}>View</button>
-                            <button type="button" onClick={() => handleDelete(game._id)} style={{ color: 'red', cursor: 'pointer'}}>X</button>
+                    <strong>{game.name}</strong>
+                    <div style={{ float: 'right' }}>
+                    <button type="button" onClick={() => recallGame(game._id)} style={{ marginRight: '10px', cursor: 'pointer'}}>View</button>
+                    <button type="button" onClick={() => handleDelete(game._id)} style={{ color: 'red', cursor: 'pointer'}}>X</button>
                         </div>
                     </li>
                 ))}
