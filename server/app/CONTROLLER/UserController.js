@@ -6,15 +6,21 @@ const getAllUsers = async (req, res) => {
         
         // 1. Filtering & Query Ops
         const queryObj = { ...req.query};
-        const excludedFields = ['page', 'sort', 'limit', 'fields']
+
+        const excludedFields = ['page', 'sort', 'limit', 'fields', 'search']
         excludedFields.forEach(el => delete queryObj[el])
         
         // Translate standard query strings into MongoDB Ops
         let queryStr = JSON.stringify(queryObj)
         queryStr = queryStr.replace(/\b(gte|gt|lte|lt|in)\b/g, match => `$${match}`);
 
+        const parsedQuery = JSON.parse(queryStr)
+
+        if (req.query.search) {
+            parsedQuery.name = { $regex: req.query.search, $options: 'i'};
+        }
         // Initialize the query with parsed filters and preserve ur populate method
-        let query = User.find(JSON.parse(queryStr)).populate('favoriteGames', '-__v')
+        let query = User.find(parsedQuery).populate('favoriteGames', '-__v')
 
         // 2. Sorting
         if (req.query.sort){
@@ -33,7 +39,7 @@ const getAllUsers = async (req, res) => {
 
         // 4. Pagination
         const page = parseInt(req.query.page, 10) || 1;
-        const limit = parseInt(req.query.limit, 10) || 2;
+        const limit = parseInt(req.query.limit, 10) || 3;
         const skip = (page - 1) * limit;
 
         query = query.skip(skip).limit(limit);

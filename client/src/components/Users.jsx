@@ -10,11 +10,15 @@ function Users({ API_URL, showMessage }) {
 
     useEffect(() => {
         fetchUsers();
-    }, []);
+    }, [searchTerm]);
 
     const fetchUsers = async () => {
         try {
-            const res = await fetch(`${API_URL}/users`);
+            const url = searchTerm
+                ? `${API_URL}/users?search=${searchTerm}`
+                : `${API_URL}/users`;
+
+            const res = await fetch(url);
             const result = await res.json();
             if (result.success) setUsers(result.data);
         } catch (err) {
@@ -64,10 +68,6 @@ function Users({ API_URL, showMessage }) {
         }
     }
 
-    const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
     return (
         <div style={{flex: 1 }}>
             {selectedUser && (
@@ -101,7 +101,7 @@ function Users({ API_URL, showMessage }) {
             />
 
             <ul style={{ padding: 0, listStyle: 'none'}}>
-                {filteredUsers.map(user => (
+                {users?.map(user => (
                     <li key={user._id} style={{ marginBottom: '10px', padding: '10px', border: '1px solid #ccc' }}>
                         <strong>{user.name} </strong>
                         <div style={{ float: 'right'}}>
