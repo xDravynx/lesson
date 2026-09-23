@@ -5,15 +5,24 @@ const getAllGames = async (req, res) => {
     try {
         // 1. Filtering & Query Ops
         const queryObj = { ...req.query};
-        const excludedFields = ['page', 'sort', 'limit', 'fields']
+
+        const excludedFields = ['page', 'sort', 'limit', 'fields', 'search']
         excludedFields.forEach(el => delete queryObj[el])
 
         // Translate standard query strings into MongoDB Ops
         let queryStr = JSON.stringify(queryObj)
         queryStr = queryStr.replace(/\b(gte|gt|lte|lt|in)\b/g, match => `$${match}`);
 
+        // Parse it back into an object 
+        const parsedQuery = JSON.parse(queryStr);
+
+        // If the frontend passed ?search=something, add a regex filter for the 'name' field
+        if (req.query.search) {
+            parsedQuery.name = { $regex: req.query.search, $options: 'i'}
+        }
+
         // Initialize the query with the parsed filters and preserve your populate method
-        let query = Game.find(JSON.parse(queryStr)).populate('user', '-__v')
+        let query = Game.find(parsedQuery).populate('user', '-__v') 
 
         // 2. Sorting
         if (req.query.sort){
@@ -32,7 +41,7 @@ const getAllGames = async (req, res) => {
 
         // 4. Pagination
         const page = parseInt(req.query.page, 10) || 1;
-        const limit = parseInt(req.query.limit, 10) || 2;
+        const limit = parseInt(req.query.limit, 10) || 3;
         const skip = (page - 1) * limit;
 
         query = query.skip(skip).limit(limit);

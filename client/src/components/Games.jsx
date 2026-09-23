@@ -10,11 +10,15 @@ function Games({ API_URL, showMessage }) {
 
     useEffect(() => {
         fetchGames();
-    }, []);
+    }, [searchTerm]);
 
     const fetchGames = async () => {
         try {
-            const res = await fetch(`${API_URL}/games`);
+            const url = searchTerm
+                ? `${API_URL}/games?search=${searchTerm}`
+                :  `${API_URL}/games`;
+
+            const res = await fetch(url);
             const result = await res.json();
             if (result.success) setGames(result.data);
         } catch (err) {
@@ -64,9 +68,7 @@ function Games({ API_URL, showMessage }) {
         }       
     };
 
-    const filteredGames = games?.filter(game =>
-        game.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+
 
     return (
         <div style={{ flex: 1 }}>
@@ -99,7 +101,7 @@ function Games({ API_URL, showMessage }) {
                 placeholder="🔍 Search games by name..." 
             />
             <ul style={{ padding: 0, listStyle: 'none' }}>
-                {filteredGames.map(game => (
+                {games?.map(game => (
                     <li key={game._id} style={{ marginBottom: '10px', padding: '10px', border: '1px solid #ccc' }}>
                     <strong>{game.name}</strong>
                     <div style={{ float: 'right' }}>
